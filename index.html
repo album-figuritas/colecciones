@@ -302,9 +302,10 @@ body.editing .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 <script>
 function waHTML(t){return esc(t).split('\n').map(l=>l.replace(/(^|[\s(])\*([^*\n]*[^*\s\n])\*(?=$|[\s.,:;!?)])/g,'$1<b>$2</b>').replace(/(^|[\s(])_([^_\n]*[^_\s\n])_(?=$|[\s.,:;!?)])/g,'$1<i>$2</i>').replace(/(^|[\s(])~([^~\n]*[^~\s\n])~(?=$|[\s.,:;!?)])/g,'$1<s>$2</s>')).join('\n')}
 const shRaw=()=>{const e=document.getElementById('shtxt');return e?(e.dataset.raw!=null?e.dataset.raw:e.textContent):''};
-const appLink=()=>{try{return window.IS_PWA?location.origin+location.pathname.replace(/index\.html$/,''):''}catch(e){return ''}};
+const APP_URL='https://album-figuritas.github.io/colecciones/';
+const appLink=()=>APP_URL;
 const vShare=v=>v&&(v.shareName||v.name)||'';
-const APP_VER='21';
+const APP_VER='22';
 const IC={
  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>',
  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg>',
@@ -651,7 +652,7 @@ function editHTML(){const c=col();const sh=c.share;
   <label class="chk"><input type="checkbox" id="sh-bd" data-sh="bold" ${sh.bold?'checked':''}><span>Títulos de sección en negrita<small>En WhatsApp se ven así: *Lista Básicas · Vidrio:*</small></span></label>
   <label class="chk"><input type="checkbox" id="sh-gg" data-sh="gapGroups" ${sh.gapGroups?'checked':''}><span>Línea en blanco entre cada variante<small>También deja una línea en blanco después del título de Faltantes o Repetidas</small></span></label>
   <div class="f" style="margin-top:8px"><label for="sh-ft">Texto al final · {enlace} = link de la app</label><input id="sh-ft" data-sh="footer" value="${esc(sh.footer||'')}" placeholder="📲 Arma tu álbum aquí: {enlace}"></div>
-  <p class="muted" style="font-size:12px;margin:-4px 0 0">${appLink()?'El link es '+esc(appLink())+'.':'El link solo se agrega en la app instalada desde GitHub.'} Déjalo vacío para no poner nada al final.</p>
+  <p class="muted" style="font-size:12px;margin:-4px 0 0">El link es ${esc(appLink())}.  Déjalo vacío para no poner nada al final.</p>
   <p class="muted" style="font-size:12px;margin:6px 0 0">Los emojis de cada variante se ponen en la pestaña Variantes, en "Nombre al compartir".</p></div>`;}
   if(etab==='secs'){h+=`<div class="acts" style="margin-top:8px">${delBtn('delcol',0,'Eliminar colección')}<button class="btn" data-a="reset0">Poner todo en 0</button></div>`;}
   return h;
