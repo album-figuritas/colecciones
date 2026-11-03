@@ -288,6 +288,8 @@ body.editing .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 .tplgrp .menu{padding:0 12px}
 .mrowinfo{display:flex;gap:14px;align-items:center;padding:14px 2px;border-top:1px solid var(--line);opacity:.7}.mrowinfo b{display:block}.mrowinfo small{display:block;color:var(--muted);font-size:12.5px}
 .sheet pre.wa{font-family:var(--f-body);font-size:14px;line-height:1.5}.sheet pre.wa b{font-weight:700}
+.tpllock{display:block;font-size:12.5px;line-height:1.45;margin-bottom:10px}
+.card button:disabled,.card input:disabled,.card textarea:disabled{opacity:.55;cursor:not-allowed}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;z-index:30;font-size:14px}
 </style>
 
@@ -305,7 +307,7 @@ const shRaw=()=>{const e=document.getElementById('shtxt');return e?(e.dataset.ra
 const APP_URL='https://album-figuritas.github.io/colecciones/';
 const appLink=()=>APP_URL;
 const vShare=v=>v&&(v.shareName||v.name)||'';
-const APP_VER='22';
+const APP_VER='24';
 const IC={
  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>',
  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg>',
@@ -599,11 +601,11 @@ const usedBy=(c,v)=>c.sections.filter(s=>s.variant===v.id||s.specialVariant===v.
 const varSum=(c,v)=>{const u=usedBy(c,v);return vLabel(c,v)+' · '+(u.length?u.join(', '):'Sin usar')};
 function varRow(c,v,i){const op=openVar===v.id;const o=(obj,cur)=>Object.entries(obj).map(([k,l])=>`<option value="${k}" ${k===cur?'selected':''}>${l}</option>`).join('');
   return `<div class="var acc">${vPreview(c,v,i+1)}<div style="min-width:0"><button class="acch" data-a="vtoggle" data-id="${v.id}" aria-expanded="${op}"><span><b>${esc(v.name)}</b><small>${esc(varSum(c,v))}</small></span><span class="chev">${op?'▴':'▾'}</span></button>
-  ${op?`<div class="vf" style="margin-top:8px"><input type="text" id="v-n-${v.id}" data-v="${i}" data-f="name" value="${esc(v.name)}" aria-label="Nombre de la variante"><input type="color" id="v-c-${v.id}" data-v="${i}" data-f="color" value="${esc(v.color)}" aria-label="Color">
+  ${op?`<div class="vf" style="margin-top:8px"><input type="text" id="v-n-${v.id}" data-v="${i}" data-f="name" value="${esc(v.name)}" aria-label="Nombre de la variante" ${varLocked(c,v)?'disabled title="Viene de la plantilla"':''}><input type="color" id="v-c-${v.id}" data-v="${i}" data-f="color" value="${esc(v.color)}" aria-label="Color">
   <input type="text" id="v-s-${v.id}" data-v="${i}" data-f="shareName" value="${esc(v.shareName||'')}" placeholder="Nombre al compartir, ej: Verde🟢 escarcha✨" aria-label="Nombre al compartir" style="grid-column:1/-1">
   <select id="v-e-${v.id}" data-v="${i}" data-f="effect" aria-label="Acabado">${o(EFFECTS,v.effect)}</select>
   <select id="v-t-${v.id}" data-v="${i}" data-f="texture" aria-label="Brillo"><option value="">Sin brillo</option>${c.textures.map(t=>`<option value="${t.id}" ${t.id===v.texture?'selected':''}>Brillo: ${esc(t.name)}</option>`).join('')}</select>
-  ${c.variants.length>1?`<div class="acts" style="grid-column:1/-1">${delBtn('delvar',i,'Quitar variante')}</div>`:''}</div>`:''}</div></div>`}
+  ${varLocked(c,v)?'<p class="muted" style="grid-column:1/-1;font-size:12px;margin:0">🔒 Viene de la plantilla: el nombre queda fijo. Color, acabado, brillo y nombre al compartir sí los puedes cambiar.</p>':c.variants.length>1?`<div class="acts" style="grid-column:1/-1">${delBtn('delvar',i,'Quitar variante')}</div>`:''}</div>`:''}</div></div>`}
 function pairsHTML(c){const pr=new Set(c.goalPairs||[]);const n=c.sections.reduce((a,s)=>a+(isMulti(s)?secVars(c,s).length:1),0);
   return `<div class="acts" style="margin:2px 0 8px"><span class="muted" style="font-size:12.5px;align-self:center;flex:1">${pr.size?pr.size+' de '+n+' marcadas':'Nada marcado: cuenta todo'}</span><button class="btn sm" data-a="gpall">Todas</button><button class="btn sm" data-a="gpnone">Ninguna</button></div>
   <div class="gpairs">${c.sections.map((s,i)=>{const chip=(k,v,label)=>`<label class="vck"><input type="checkbox" id="gp-${esc(k)}" data-gpair="${esc(k)}" ${pr.has(k)?'checked':''}>${v?`<i class="sw v-${v.effect} ${txCls(c,v)}" style="${esc(vStyle(v))}"></i>`:''}${esc(label)}</label>`;
@@ -622,24 +624,25 @@ function editHTML(){const c=col();const sh=c.share;
   <p class="muted" style="font-size:13px;margin:0 0 6px">Vidrio, láser, estrella, escarcha, burbuja… Ajusta los que vienen o crea uno nuevo cuando encuentres otro tipo, y úsalo en cualquier variante. Toca uno para editarlo.</p>
   ${c.textures.map((t,i)=>txEditor(c,t,i)).join('')}</div>`;}
   if(etab==='secs'){h+=`<div class="sechd" style="margin:20px 0 10px"><h3 style="flex:1">Secciones (${c.sections.length})</h3><button class="btn sm pri" data-a="addsec">+ Sección</button></div>`;
-  c.sections.forEach((s,i)=>{const p=`data-s="${i}"`;
+  c.sections.forEach((s,i)=>{const L=secLocked(c,s);const D=L?'disabled':'';const p=`data-s="${i}"`;
     h+=`<div class="card"><div class="sechd"><span class="idx">${i+1}</span><span class="nm">${esc(s.name)}</span><button class="btn sm" data-a="up" data-i="${i}" aria-label="Subir">↑</button><button class="btn sm" data-a="down" data-i="${i}" aria-label="Bajar">↓</button></div>
-    <div class="seg">${Object.entries(KINDS).map(([k,l])=>`<button aria-pressed="${s.kind===k}" data-a="kind" data-i="${i}" data-k="${k}">${l}</button>`).join('')}</div>
-    <div class="row"><div class="f"><label for="s${i}-n">Nombre en la app</label><input id="s${i}-n" ${p} data-f="name" value="${esc(s.name)}"></div><div class="f"><label for="s${i}-sn">Nombre al compartir</label><input id="s${i}-sn" ${p} data-f="shareName" value="${esc(s.shareName)}" placeholder="Igual que en la app"></div><div class="f"><label for="s${i}-e">Emoji</label><input id="s${i}-e" ${p} data-f="emoji" value="${esc(s.emoji)}" placeholder="⭐"></div></div>`;
-    if(s.kind==='num'||s.kind==='code')h+=`<div class="row">${s.kind==='code'?`<div class="f"><label for="s${i}-p">Código (letra)</label><input id="s${i}-p" ${p} data-f="prefix" value="${esc(s.prefix)}"></div>`:''}<div class="f"><label for="s${i}-a">Desde</label><input id="s${i}-a" type="number" inputmode="numeric" ${p} data-f="from" value="${esc(s.from)}"></div><div class="f"><label for="s${i}-b">Hasta</label><input id="s${i}-b" type="number" inputmode="numeric" ${p} data-f="to" value="${esc(s.to)}"></div></div>`;
-    if(s.kind==='letters')h+=`<div class="f"><label for="s${i}-l">Letras, separadas por coma</label><input id="s${i}-l" ${p} data-f="letters" value="${esc(s.letters)}" placeholder="A,B,C"></div><button class="btn sm" style="margin-bottom:10px" data-a="az" data-i="${i}">Rellenar A–Z</button>`;
-    if(s.kind==='labels')h+=`<div class="f"><label for="s${i}-lb">Una por línea · <code>texto en la app | texto al compartir</code></label><textarea id="s${i}-lb" ${p} data-f="labels">${esc((s.labels||[]).map(l=>l.app===l.share?l.app:l.app+' | '+l.share).join('\n'))}</textarea></div>`;
-    h+=`<div class="grp"><span class="lbl">Variantes de esta sección</span><div class="seg" style="margin-top:6px"><button aria-pressed="${!isMulti(s)}" data-a="secmulti" data-i="${i}" data-k="0">Una variante</button><button aria-pressed="${isMulti(s)}" data-a="secmulti" data-i="${i}" data-k="1">Sale en varias variantes</button></div>
-    ${isMulti(s)?`<p class="muted" style="font-size:12.5px;margin:-4px 0 6px">Cada figurita de esta sección se cuenta por separado en cada variante marcada.</p><div class="vchecks">${c.variants.map(v=>`<label class="vck"><input type="checkbox" id="s${i}-vc-${v.id}" data-s="${i}" data-varchk="${v.id}" ${s.vars.includes(v.id)?'checked':''}><i class="sw v-${v.effect} ${txCls(c,v)}" style="${esc(vStyle(v))}"></i>${esc(v.name)}</label>`).join('')}</div>
-    <div class="row"><div class="f"><label for="s${i}-sp">Especiales ${s.kind==='labels'||s.kind==='letters'?'(posición o texto)':''}</label><input id="s${i}-sp" ${p} data-f="specials" value="${esc(s.specials)}" placeholder="Ej: 1-18, 20, 24-32 o E1-E5" ${s.allSpecial?'disabled':''}></div></div>`:`<div class="row"><div class="f"><label for="s${i}-sp">Especiales ${s.kind==='labels'||s.kind==='letters'?'(posición o texto)':''}</label><input id="s${i}-sp" ${p} data-f="specials" value="${esc(s.specials)}" placeholder="Ej: 1-18, 20, 24-32 o E1-E5" ${s.allSpecial?'disabled':''}></div><div class="f"><label for="s${i}-v">Variante normal</label><select id="s${i}-v" ${p} data-f="variant">${varOpts(c,s.variant)}</select></div><div class="f"><label for="s${i}-sv">Variante especial</label><select id="s${i}-sv" ${p} data-f="specialVariant">${varOpts(c,s.specialVariant,true)}</select></div></div>`}
-    <label class="chk"><input type="checkbox" id="s${i}-all" ${p} data-f="allSpecial" ${s.allSpecial?'checked':''}><span>Todas son especiales</span></label></div>
+    ${L?'<div class="lockbar tpllock">🔒 De la plantilla: el nombre, los números y sus variantes vienen fijos para que el intercambio funcione. Puedes agregarle variantes tuyas.</div>':''}
+    <div class="seg">${Object.entries(KINDS).map(([k,l])=>`<button aria-pressed="${s.kind===k}" data-a="kind" data-i="${i}" data-k="${k}" ${D}>${l}</button>`).join('')}</div>
+    <div class="row"><div class="f"><label for="s${i}-n">Nombre en la app</label><input id="s${i}-n" ${p} data-f="name" value="${esc(s.name)}" ${D}></div><div class="f"><label for="s${i}-sn">Nombre al compartir</label><input id="s${i}-sn" ${p} data-f="shareName" value="${esc(s.shareName)}" placeholder="Igual que en la app"></div><div class="f"><label for="s${i}-e">Emoji</label><input id="s${i}-e" ${p} data-f="emoji" value="${esc(s.emoji)}" placeholder="⭐"></div></div>`;
+    if(s.kind==='num'||s.kind==='code')h+=`<div class="row">${s.kind==='code'?`<div class="f"><label for="s${i}-p">Código (letra)</label><input id="s${i}-p" ${p} data-f="prefix" value="${esc(s.prefix)}" ${D}></div>`:''}<div class="f"><label for="s${i}-a">Desde</label><input id="s${i}-a" type="number" inputmode="numeric" ${p} data-f="from" value="${esc(s.from)}" ${D}></div><div class="f"><label for="s${i}-b">Hasta</label><input id="s${i}-b" type="number" inputmode="numeric" ${p} data-f="to" value="${esc(s.to)}" ${D}></div></div>`;
+    if(s.kind==='letters')h+=`<div class="f"><label for="s${i}-l">Letras, separadas por coma</label><input id="s${i}-l" ${p} data-f="letters" value="${esc(s.letters)}" placeholder="A,B,C" ${D}></div><button class="btn sm" style="margin-bottom:10px" data-a="az" data-i="${i}" ${D}>Rellenar A–Z</button>`;
+    if(s.kind==='labels')h+=`<div class="f"><label for="s${i}-lb">Una por línea · <code>texto en la app | texto al compartir</code></label><textarea id="s${i}-lb" ${p} data-f="labels" ${D}>${esc((s.labels||[]).map(l=>l.app===l.share?l.app:l.app+' | '+l.share).join('\n'))}</textarea></div>`;
+    h+=`<div class="grp"><span class="lbl">Variantes de esta sección</span><div class="seg" style="margin-top:6px"><button aria-pressed="${!isMulti(s)}" data-a="secmulti" data-i="${i}" data-k="0" ${D}>Una variante</button><button aria-pressed="${isMulti(s)}" data-a="secmulti" data-i="${i}" data-k="1" ${D}>Sale en varias variantes</button></div>
+    ${isMulti(s)?`<p class="muted" style="font-size:12.5px;margin:-4px 0 6px">Cada figurita de esta sección se cuenta por separado en cada variante marcada.</p><div class="vchecks">${c.variants.map(v=>`<label class="vck"><input type="checkbox" id="s${i}-vc-${v.id}" data-s="${i}" data-varchk="${v.id}" ${L&&varLocked(c,v)?'disabled':''} ${s.vars.includes(v.id)?'checked':''}><i class="sw v-${v.effect} ${txCls(c,v)}" style="${esc(vStyle(v))}"></i>${esc(v.name)}</label>`).join('')}</div>
+    <div class="row"><div class="f"><label for="s${i}-sp">Especiales ${s.kind==='labels'||s.kind==='letters'?'(posición o texto)':''}</label><input id="s${i}-sp" ${p} data-f="specials" value="${esc(s.specials)}" placeholder="Ej: 1-18, 20, 24-32 o E1-E5" ${s.allSpecial||L?'disabled':''}></div></div>`:`<div class="row"><div class="f"><label for="s${i}-sp">Especiales ${s.kind==='labels'||s.kind==='letters'?'(posición o texto)':''}</label><input id="s${i}-sp" ${p} data-f="specials" value="${esc(s.specials)}" placeholder="Ej: 1-18, 20, 24-32 o E1-E5" ${s.allSpecial||L?'disabled':''}></div><div class="f"><label for="s${i}-v">Variante normal</label><select id="s${i}-v" ${p} data-f="variant">${varOpts(c,s.variant)}</select></div><div class="f"><label for="s${i}-sv">Variante especial</label><select id="s${i}-sv" ${p} data-f="specialVariant">${varOpts(c,s.specialVariant,true)}</select></div></div>`}
+    <label class="chk"><input type="checkbox" id="s${i}-all" ${p} data-f="allSpecial" ${s.allSpecial?'checked':''} ${D}><span>Todas son especiales</span></label></div>
     <div class="grp"><span class="lbl">Dónde aparece</span>
     <label class="chk"><input type="checkbox" id="s${i}-sa" ${p} data-f="showApp" ${s.showApp?'checked':''}><span>Mostrar en la app<small>Si la apagas, se oculta de la grilla pero sigue contando en el progreso.</small></span></label>
     <label class="chk"><input type="checkbox" id="s${i}-ss" ${p} data-f="showShare" ${s.showShare?'checked':''}><span>Incluir al compartir</span></label>
     <label class="chk"><input type="checkbox" id="s${i}-ga" ${p} data-f="gapApp" ${s.gapApp?'checked':''}><span>Separación antes de esta sección en la app</span></label>
     <label class="chk"><input type="checkbox" id="s${i}-bs" ${p} data-f="breakShare" ${s.breakShare?'checked':''}><span>Línea en blanco después de esta sección al compartir</span></label>
     <span class="lbl">Figuritas al compartir</span><div class="seg" style="margin-top:6px">${[['inline','Seguidas con separador'],['lines','Una por línea']].map(([k,l])=>`<button aria-pressed="${layoutOf(s)===k}" data-a="layout" data-i="${i}" data-k="${k}">${l}</button>`).join('')}</div></div>
-    <div class="acts" style="margin-top:6px"><button class="btn" data-a="dupsec" data-i="${i}">Duplicar sección</button>${isMulti(s)?'':`<button class="btn" data-a="secsplit" data-i="${i}">Copias por variante</button>`}${delBtn('delsec',i,'Eliminar sección')}</div></div>`});
+    <div class="acts" style="margin-top:6px"><button class="btn" data-a="dupsec" data-i="${i}">Duplicar sección</button>${isMulti(s)?'':`<button class="btn" data-a="secsplit" data-i="${i}">Copias por variante</button>`}${L?'':delBtn('delsec',i,'Eliminar sección')}</div></div>`});
   }
   if(etab==='share'){h+=`<div class="card"><h3 style="margin-bottom:10px">Texto al compartir</h3>
   <div class="f"><label for="sh-t">Encabezado · usa {nombre} y {editorial}</label><input id="sh-t" data-sh="title" value="${esc(sh.title)}"></div>
@@ -703,7 +706,7 @@ function parseTradeText(text,c){const res=newRes('',false);let mode=null,cur=nul
       const nt=normTxt(t),ut=t.toUpperCase();
       const it=its.find(x=>x.code.toUpperCase()===ut||normTxt(x.share)===nt||normTxt(x.app)===nt||((cur.kind==='labels'||cur.kind==='letters')&&String(x.num)===t.replace(/\)$/,'')));
       if(it)put(it);else res.unknown.push(t)})};
-  for(const raw of String(text).split(/\r?\n/)){const line=raw.trim();if(!line){cur=null;continue}const low=normTxt(line);
+  for(const raw of String(text).split(/\r?\n/)){const line=raw.replace(/[*_~]+/g,' ').replace(/\s+/g,' ').trim();if(!line){cur=null;continue}const low=normTxt(line);
     if(/\bfaltan/.test(low)&&/:\s*$/.test(line)){mode='miss';cur=null;heads++;continue}
     if(/\brepetid/.test(low)&&/:\s*$/.test(line)){mode='rep';cur=null;heads++;continue}
     const ci=line.indexOf(':');if(ci>0){const [s,vid]=matchHead(line.slice(0,ci));if(s){cur=s;cvid=vid;const rest=line.slice(ci+1).trim();if(rest&&mode)addItems(rest);continue}}
@@ -795,7 +798,6 @@ function loadTemplates(force){if(tplLoading&&!force)return tplLoading;
     tplCache={ok:true,list};return tplCache})();return tplLoading}
 const tplOf=c=>c.tpl&&tplCache&&tplCache.list.find(t=>t.id===c.tpl.id);
 const tplNewer=c=>{const t=tplOf(c);return t&&t.version>(c.tpl.version||0)?t:null};
-function colFromTemplate(t){const n=fromJSON(JSON.parse(JSON.stringify(t.data)));delete n.plantilla;n.counts={};n.tpl={id:t.id,file:t.file,version:t.version};return ensure(n)}
 let linkSel=null;
 function openLink(id){const c=S.cols.find(x=>x.id===id);
   tplRow=(t,i)=>linkSel===i?`<button data-a="dolink" data-id="${c.id}" data-i="${i}" data-ok="1"><span class="mi">✓</span><span><b>Toca otra vez para usar ${esc(t.name)}</b><small>No se puede deshacer. Si quieres, exporta antes un respaldo.</small></span></button>`:`<button data-a="dolink" data-id="${c.id}" data-i="${i}"><span class="mi">▦</span><span><b>${esc(t.name)}</b><small>${esc('versión '+t.version)}</small></span></button>`;
@@ -810,17 +812,39 @@ function openNewCol(){tplRow=(t,i)=>`<button data-a="newtpl" data-i="${i}"><span
   <h3 style="margin:14px 0 2px">Otras formas</h3>
   <div class="menu">${row('newblank','＋','En blanco','Armas las secciones desde cero')}${row('io-all','⇩','Desde un archivo JSON','Pega o elige un JSON que te pasaron')}</div>`);
   if(!tplCache)loadTemplates().then(()=>{if(!document.getElementById('sheet').hidden&&document.getElementById('tpllist'))openNewCol()})}
-function updateFromTemplate(c,t){const n=colFromTemplate(t);const oldSecs=c.sections;
-  const nameOf=new Map(oldSecs.map(s=>[s.id,normTxt(s.name)]));const newById=new Map(n.sections.map(s=>[s.id,s]));const newByName=new Map(n.sections.map(s=>[normTxt(s.name),s]));
-  const vname=new Map(c.variants.map(v=>[v.id,normTxt(v.name)]));const newVarByName=new Map(n.variants.map(v=>[normTxt(v.name),v.id]));const newVarIds=new Set(n.variants.map(v=>v.id));
-  const counts={};let lost=0;
+function colFromTemplate(t){const n=fromJSON(JSON.parse(JSON.stringify(t.data)));delete n.plantilla;n.counts={};n.tpl={id:t.id,file:t.file,version:t.version};
+  n.sections.forEach(s=>s.fromTpl=true);n.variants.forEach(v=>v.fromTpl=true);n.tplFlags=true;return ensure(n)}
+const secLocked=(c,s)=>!!(c&&c.tpl&&!c.tplOwner&&s&&(c.tplFlags?s.fromTpl:true));
+const varLocked=(c,v)=>!!(c&&c.tpl&&!c.tplOwner&&v&&(c.tplFlags?v.fromTpl:true));
+function uniqName(name,taken){let n=name+' (personal)',k=2;while(taken.has(normTxt(n)))n=name+' (personal '+(k++)+')';return n}
+function updateFromTemplate(c,t){const n=colFromTemplate(t);ensure(c);const hasFlags=!!c.tplFlags&&!c.tplOwner;
+  const newById=new Map(n.sections.map(s=>[s.id,s]));const newByName=new Map(n.sections.map(s=>[normTxt(s.name),s]));
+  const newVarIds=new Set(n.variants.map(v=>v.id));const newVarByName=new Map(n.variants.map(v=>[normTxt(v.name),v.id]));
+  const isTplSec=s=>hasFlags?!!s.fromTpl:!!(newById.get(s.id)||newByName.get(normTxt(s.name)));
+  const isTplVar=v=>hasFlags?!!v.fromTpl:(newVarIds.has(v.id)||newVarByName.has(normTxt(v.name)));
+  const matchSec=s=>newById.get(s.id)||newByName.get(normTxt(s.name));
+  // variantes propias: se conservan; si chocan de nombre con una de la plantilla se renombran
+  const takenV=new Set(n.variants.map(v=>normTxt(v.name)));const customVars=c.variants.filter(v=>!isTplVar(v)).map(v=>{const x=JSON.parse(JSON.stringify(v));delete x.fromTpl;if(newVarIds.has(x.id))x.id=uid();if(takenV.has(normTxt(x.name)))x.name=uniqName(x.name,takenV);takenV.add(normTxt(x.name));return [v.id,x]});
+  const varMap=new Map(customVars.map(([o,x])=>[o,x.id]));n.variants.push(...customVars.map(([,x])=>x));
+  const tids=new Set(n.textures.map(x=>x.id));(c.textures||[]).forEach(x=>{if(!tids.has(x.id))n.textures.push(x)});
+  // secciones propias: se conservan al final; si chocan de nombre se renombran
+  const takenS=new Set(n.sections.map(s=>normTxt(s.name)));const secMap=new Map();const customSecs=[];
+  c.sections.forEach(s=>{if(isTplSec(s)){const ns=matchSec(s);if(ns){secMap.set(s.id,ns);
+        if(isMulti(s)&&isMulti(ns))s.vars.forEach(id=>{const cid=varMap.get(id);if(cid&&!ns.vars.includes(cid))ns.vars.push(cid)})}return}
+    const x=JSON.parse(JSON.stringify(s));delete x.fromTpl;if(newById.has(x.id))x.id=uid();if(takenS.has(normTxt(x.name)))x.name=uniqName(x.name,takenS);takenS.add(normTxt(x.name));
+    if(isMulti(x))x.vars=x.vars.map(id=>varMap.get(id)||(newVarIds.has(id)?id:null)).filter(Boolean);
+    if(x.variant&&varMap.has(x.variant))x.variant=varMap.get(x.variant);if(x.specialVariant&&varMap.has(x.specialVariant))x.specialVariant=varMap.get(x.specialVariant);
+    secMap.set(s.id,x);customSecs.push(x)});
+  n.sections.push(...customSecs);
+  const vname=new Map(c.variants.map(v=>[v.id,normTxt(v.name)]));const counts={};let lost=0;
   Object.entries(c.counts||{}).forEach(([k,cnt])=>{const i=k.indexOf('|');const sid=k.slice(0,i);let rest=k.slice(i+1);const at=rest.indexOf('@');let code=at<0?rest:rest.slice(0,at),vid=at<0?null:rest.slice(at+1);
-    const ns=newById.get(sid)||newByName.get(nameOf.get(sid));if(!ns){lost+=cnt;return}
-    if(vid&&!newVarIds.has(vid))vid=newVarByName.get(vname.get(vid))||null;
-    const it=items(ns).find(x=>x.code===code);if(!it){lost+=cnt;return}
-    let nk=key(ns,it);if(isMulti(ns)){const vv=vid&&ns.vars.includes(vid)?vid:(vid?null:ns.vars[0]);if(!vv){lost+=cnt;return}nk+='@'+vv}else if(vid&&!isMulti(ns)){/* venía con variante y ahora es de una sola */}
+    const ns=secMap.get(sid);if(!ns){lost+=cnt;return}
+    if(vid){if(varMap.has(vid))vid=varMap.get(vid);else if(!newVarIds.has(vid))vid=newVarByName.get(vname.get(vid))||null}
+    const it=itemsRaw(ns).find(x=>x.code===code);if(!it){lost+=cnt;return}
+    let nk=key(ns,it);if(isMulti(ns)){const vv=vid&&ns.vars.includes(vid)?vid:(vid?null:ns.vars[0]);if(!vv){lost+=cnt;return}nk+='@'+vv}
     counts[nk]=(counts[nk]||0)+cnt});
-  const keep={id:c.id,name:c.name,counts,goal:c.goal,goalPairs:(c.goalPairs||[]).filter(k=>newById.has(k.split('@')[0])),activeVar:c.activeVar,ui:c.ui,locked:c.locked,group:c.group,copy:c.copy,share:c.share,tpl:{id:t.id,file:t.file,version:t.version}};
+  const gp=(c.goalPairs||[]).map(k=>{const [sid,vid]=k.split('@');const ns=secMap.get(sid);if(!ns)return null;return vid?ns.id+'@'+(varMap.get(vid)||vid):ns.id}).filter(Boolean);
+  const keep={id:c.id,name:c.name,counts,goal:c.goal,goalPairs:gp,activeVar:c.activeVar,ui:c.ui,locked:c.locked,group:c.group,copy:c.copy,share:c.share,tpl:{id:t.id,file:t.file,version:t.version},tplFlags:true,tplOwner:c.tplOwner};
   const out=Object.assign(n,keep);const idx=S.cols.indexOf(c);S.cols[idx]=out;save();return lost}
 
 /* ---------- Acciones masivas con confirmación ---------- */
@@ -894,7 +918,7 @@ function openShare(){const c=col();const t=shareText(c,shOpt);
   <p class="muted" style="font-size:12.5px;margin-top:10px">Pega el texto en WhatsApp. Qué secciones salen y los saltos de línea se configuran en cada sección.</p>`)}
 
 /* ---------- Importar / exportar ---------- */
-function exportObj(c,withCounts=true){const {id,locked,group,tpl,activeVar,ui,...rest}=JSON.parse(JSON.stringify(c));if(!withCounts){rest.counts={};delete rest.copy}return {formato:'album-figuritas',version:2,...rest}}
+function exportObj(c,withCounts=true){const {id,locked,group,tpl,activeVar,ui,tplFlags,tplOwner,...rest}=JSON.parse(JSON.stringify(c));(rest.sections||[]).forEach(x=>delete x.fromTpl);(rest.variants||[]).forEach(x=>delete x.fromTpl);if(!withCounts){rest.counts={};delete rest.copy}return {formato:'album-figuritas',version:2,...rest}}
 let menuDel=false;
 function openColMenu(id){const c=ensure(S.cols.find(x=>x.id===id));if(!c)return;const s=stats(c);
   const it=(a,ic,t,d,cls='')=>`<button class="${cls}" data-a="${a}" data-id="${c.id}"><span class="mi">${ic}</span><span><b>${t}</b><small>${d}</small></span></button>`;
@@ -909,6 +933,7 @@ function openColMenu(id){const c=ensure(S.cols.find(x=>x.id===id));if(!c)return;
     :!tplCache?`<div class="mrowinfo"><span class="mi">⟳</span><span><b>Actualizar desde plantilla</b><small>Buscando la plantilla…</small></span></div>`
     :tplOf(c)?it('mupd','⟳',tplNewer(c)?'Actualizar plantilla · nueva versión '+tplOf(c).version:'Actualizar desde plantilla',tplNewer(c)?'Tienes la versión '+(c.tpl.version||1)+'. Toma los cambios de la plantilla.':'Tienes la versión '+(c.tpl.version||1)+'. Vuelve a cargarla por si cambió algo.')
     :`<div class="mrowinfo"><span class="mi">⟳</span><span><b>Actualizar desde plantilla</b><small>La plantilla no está disponible ahora. Revisa tu conexión.</small></span></div>`):''}
+  ${c.tpl?(c.tplOwner?it('mowner','🔓','Modo autor: activado','Puedes editar todo para preparar la plantilla. Toca para volver a bloquear.'):it('mowner','🔒','Modo autor de la plantilla','Solo para quien mantiene la plantilla: desbloquea nombres, números y variantes en tu copia.')):''}
   ${it('mtrade','⇄','Intercambiar','Compara con un amigo que tenga la misma configuración')}
   ${it('mgroup','▤','Mover a grupo',(S.groups||[]).find(g=>g.id===c.group)?.name?'Ahora en: '+(S.groups||[]).find(g=>g.id===c.group).name:'Sin agrupación')}
   ${it('medit','◐','Variantes y brillos','Colores, acabados y brillos de esta colección').replace('data-a="medit"','data-a="medit" data-t="vars"')}
@@ -1043,24 +1068,24 @@ document.addEventListener('click',e=>{
    case 'addtx':openTx=uid();c.textures.push({id:openTx,name:'Brillo '+(c.textures.length+1),shape:'bubbles',count:8,size:'m',palette:'rainbow',anim:true});save();{const y=scrollY;render();scrollTo(0,y)}break;
    case 'deltx':if(b.dataset.ok){const t=c.textures.splice(i,1)[0];c.variants.forEach(v=>{if(v.texture===t.id)v.texture=null});armed=null;save();const y=scrollY;render();scrollTo(0,y)}break;
    case 'addvar':openVar=uid();c.variants.push({id:openVar,name:'Variante '+(c.variants.length+1),color:'#2fa36b',effect:'solid'});save();render();scrollTo(0,document.body.scrollHeight);break;
-   case 'delvar':if(!b.dataset.ok)break;{armed=null;const v=c.variants.splice(i,1)[0];c.sections.forEach(s=>{if(s.variant===v.id)s.variant=c.variants[0].id;if(s.specialVariant===v.id)s.specialVariant=null;if(isMulti(s)){s.vars=s.vars.filter(id=>id!==v.id);if(!s.vars.length)s.vars=[c.variants[0].id]}});if(c.goalVars)c.goalVars=c.goalVars.filter(id=>id!==v.id);if(c.goalPairs)c.goalPairs=c.goalPairs.filter(k=>!k.endsWith('@'+v.id));save();render();break}
+   case 'delvar':if(!b.dataset.ok||varLocked(c,c.variants[i]))break;{armed=null;const v=c.variants.splice(i,1)[0];c.sections.forEach(s=>{if(s.variant===v.id)s.variant=c.variants[0].id;if(s.specialVariant===v.id)s.specialVariant=null;if(isMulti(s)){s.vars=s.vars.filter(id=>id!==v.id);if(!s.vars.length)s.vars=[c.variants[0].id]}});if(c.goalVars)c.goalVars=c.goalVars.filter(id=>id!==v.id);if(c.goalPairs)c.goalPairs=c.goalPairs.filter(k=>!k.endsWith('@'+v.id));save();render();break}
    case 'addsec':c.sections.push(newSection({variant:c.variants[0]?.id}));save();render();scrollTo(0,document.body.scrollHeight);break;
    case 'layout':c.sections[i].shareLayout=b.dataset.k;save();render();break;
    case 'repcount':c.share.repCount=b.checked;save();openShare();break;
-   case 'kind':c.sections[i].kind=b.dataset.k;save();render();break;
-   case 'az':c.sections[i].letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').join(',');save();render();break;
+   case 'kind':if(secLocked(c,c.sections[i]))break;c.sections[i].kind=b.dataset.k;save();render();break;
+   case 'az':if(secLocked(c,c.sections[i]))break;c.sections[i].letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').join(',');save();render();break;
    case 'secsplit':openSplit(i);break;
    case 'dosplit':{const base=c.sections[i];const ids=[...document.querySelectorAll('[data-splitv]')].filter(x=>x.checked).map(x=>x.dataset.splitv);if(!ids.length){toast('Marca al menos una variante');break}
-     const bn=base.name.replace(/\s*\([^)]*\)\s*$/,'');const add=ids.map(id=>{const n=JSON.parse(JSON.stringify(base));n.id=uid();n.name=bn+' ('+varOf(c,id).name+')';n.variant=id;n.specialVariant=null;n.vars=null;return n});
+     const bn=base.name.replace(/\s*\([^)]*\)\s*$/,'');const add=ids.map(id=>{const n=JSON.parse(JSON.stringify(base));n.id=uid();n.name=bn+' ('+varOf(c,id).name+')';n.variant=id;n.specialVariant=null;n.vars=null;delete n.fromTpl;return n});
      c.sections.splice(i+1,0,...add);closeSheet();{const y=scrollY;render();scrollTo(0,y)}toast(add.length+(add.length>1?' secciones creadas':' sección creada')+'. Revisa los nombres y toca Guardar.');break}
-   case 'dupsec':{const n=JSON.parse(JSON.stringify(c.sections[i]));n.id=uid();n.name=n.name+' (copia)';c.sections.splice(i+1,0,n);save();render();
+   case 'dupsec':{const n=JSON.parse(JSON.stringify(c.sections[i]));delete n.fromTpl;n.id=uid();n.name=n.name+' (copia)';c.sections.splice(i+1,0,n);save();render();
      const inp=document.getElementById('s'+(i+1)+'-n');if(inp){inp.closest('.card').scrollIntoView({block:'start',behavior:'smooth'});inp.focus({preventScroll:true});inp.select()}toast('Sección duplicada: cámbiale el nombre y la variante');break}
    case 'lock':c.locked=!c.locked;save();{const y=scrollY;render();scrollTo(0,y)}toast(c.locked?'Álbum bloqueado':'Álbum desbloqueado');break;
    case 'up':if(i>0){[c.sections[i-1],c.sections[i]]=[c.sections[i],c.sections[i-1]];save();render()}break;
    case 'down':if(i<c.sections.length-1){[c.sections[i+1],c.sections[i]]=[c.sections[i],c.sections[i+1]];save();render()}break;
    case 'arm':{armed=b.dataset.id;const y=scrollY;render();scrollTo(0,y)}break;
    case 'disarm':{armed=null;const y=scrollY;render();scrollTo(0,y)}break;
-   case 'delsec':if(b.dataset.ok){const ds0=c.sections.splice(i,1)[0];if(c.goalPairs)c.goalPairs=c.goalPairs.filter(k=>k!==ds0.id&&!k.startsWith(ds0.id+'@'));armed=null;save();render()}break;
+   case 'delsec':if(secLocked(c,c.sections[i]))break;if(b.dataset.ok){const ds0=c.sections.splice(i,1)[0];if(c.goalPairs)c.goalPairs=c.goalPairs.filter(k=>k!==ds0.id&&!k.startsWith(ds0.id+'@'));armed=null;save();render()}break;
    case 'delcol':if(b.dataset.ok){S.cols=S.cols.filter(x=>x.id!==c.id);draft=null;draftNew=false;armed=null;save();view='home';cur=null;render();toast('Colección eliminada')}break;
    case 'sort':S.sort=b.dataset.k;if(S.sort!=='manual')reorder=false;save();render();break;
    case 'reorder':reorder=!reorder;render();break;
@@ -1106,7 +1131,7 @@ document.addEventListener('click',e=>{
    case 'repview':repView=b.dataset.k;{const y=scrollY;document.getElementById('main').innerHTML=albumHTML();scrollTo(0,y)}break;
    case 'mqm':case 'mqp':{const k=b.dataset.k;mq.vals[k]=Math.max(0,Math.min(999,(mq.vals[k]||0)+(a==='mqp'?1:-1)));const o=document.getElementById('mq-'+vidOfSlot(k));if(o)o.textContent=mq.vals[k];break}
    case 'mqok':{const c1=col();Object.entries(mq.vals).forEach(([k,n])=>{if(n)c1.counts[k]=n;else delete c1.counts[k]});save();closeSheet();refreshSec(mq.ik.split('|')[0]);break}
-   case 'secmulti':{const sx=c.sections[i];const on=b.dataset.k==='1';
+   case 'secmulti':{const sx=c.sections[i];if(secLocked(c,sx))break;const on=b.dataset.k==='1';
      if(on&&!isMulti(sx)){sx.vars=[sx.variant,sx.specialVariant].filter((id,j,arr)=>id&&arr.indexOf(id)===j&&c.variants.some(v=>v.id===id));if(!sx.vars.length)sx.vars=[c.variants[0].id];migrateSecCounts(c,sx,true);toast('Tus figuritas marcadas pasaron a '+varOf(c,sx.vars[0]).name+'. Marca las demás variantes en que sale.')}
      else if(!on&&isMulti(sx)){if(!sx.vars.includes(sx.variant))sx.variant=sx.vars[0];migrateSecCounts(c,sx,false);sx.vars=null;toast('Se conservaron las figuritas de '+varOf(c,sx.variant).name)}
      {const y=scrollY;render();scrollTo(0,y)}break}
@@ -1116,6 +1141,7 @@ document.addEventListener('click',e=>{
    case 'goal':c.goal=b.dataset.k;{const y=scrollY;render();scrollTo(0,y)}break;
    case 'mlink':linkSel=null;tplQ='';openLink(b.dataset.id);break;
    case 'dolink':{const c1=S.cols.find(x=>x.id===b.dataset.id);const t=tplCache.list[+b.dataset.i];if(!b.dataset.ok){linkSel=+b.dataset.i;openLink(c1.id);break}const nm=c1.name;const lost=updateFromTemplate(c1,t);const c2=S.cols.find(x=>x.id===c1.id);c2.name=nm;save();linkSel=null;closeSheet();render();toast(lost?'Listo. '+lost+' figuritas no tenían lugar en la plantilla.':'Listo, ahora usa la plantilla '+t.name);break}
+   case 'mowner':{const c1=S.cols.find(x=>x.id===b.dataset.id);c1.tplOwner=!c1.tplOwner;save();openColMenu(c1.id);toast(c1.tplOwner?'Modo autor activado en este celular':'Plantilla bloqueada otra vez');break}
    case 'mupd':{const c1=S.cols.find(x=>x.id===b.dataset.id);const t=tplOf(c1);if(!t)break;if(!b.dataset.ok){menuUpd=true;openColMenu(c1.id);break}const lost=updateFromTemplate(c1,t);menuUpd=false;closeSheet();render();toast(lost?'Actualizada. '+lost+' figuritas no tenían lugar en la nueva versión.':'Colección actualizada con la plantilla (versión '+t.version+')');break}
    case 'colmenu':menuUpd=false;menuDel=false;{const c1=S.cols.find(x=>x.id===b.dataset.id);if(c1&&c1.tpl){loadTemplates(true).then(()=>{if(!document.getElementById('sheet').hidden&&document.querySelector('#sheetBody [data-a="mupd"],#sheetBody .mrowinfo'))openColMenu(c1.id)})}}openColMenu(b.dataset.id);break;
    case 'mnew':{const n=dupCol(S.cols.find(x=>x.id===b.dataset.id),false);closeSheet();render();toast('Copia nueva lista: '+n.name);break}
@@ -1130,7 +1156,7 @@ document.addEventListener('click',e=>{
   }
 });
 document.addEventListener('input',e=>{if(e.target.id==='tplq'){tplQ=e.target.value;const l=document.getElementById('tpllist');if(l&&tplRow)l.innerHTML=tplListHTML(tplRow);return}const ds=e.target.dataset||{};
-  if(ds.varchk&&view==='edit'){const c=col(),sx=c.sections[+ds.s];const cur=new Set(sx.vars||[]);e.target.checked?cur.add(ds.varchk):cur.delete(ds.varchk);
+  if(ds.varchk&&view==='edit'){const c=col(),sx=c.sections[+ds.s];if(secLocked(c,sx)&&varLocked(c,c.variants.find(v=>v.id===ds.varchk))){e.target.checked=!e.target.checked;return}const cur=new Set(sx.vars||[]);e.target.checked?cur.add(ds.varchk):cur.delete(ds.varchk);
     if(!cur.size){e.target.checked=true;toast('Deja marcada al menos una variante');return}sx.vars=c.variants.map(v=>v.id).filter(id=>cur.has(id));return}
   if(ds.sgoalv&&view==='edit'){const c=col(),sx=c.sections[+ds.s];const cur=new Set(sx.goalVars||[]);e.target.checked?cur.add(ds.sgoalv):cur.delete(ds.sgoalv);sx.goalVars=c.variants.map(v=>v.id).filter(id=>cur.has(id));return}
   if(ds.gpair&&view==='edit'){const c=col();const cur=new Set(c.goalPairs||[]);e.target.checked?cur.add(ds.gpair):cur.delete(ds.gpair);c.goalPairs=[...cur];const y=scrollY;render();scrollTo(0,y);return}
