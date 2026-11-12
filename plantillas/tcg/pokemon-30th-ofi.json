@@ -37,8 +37,9 @@
       "id": "dorado",
       "name": "Dorado",
       "color": "#e2a33b",
-      "effect": "outline",
-      "shareName": "Dorado🏆"
+      "effect": "solid",
+      "shareName": "Dorado🏆",
+      "texture": "tx-escarcha"
     }
   ],
   "share": {
@@ -767,7 +768,7 @@
   ],
   "plantilla": {
     "id": "pokemon-30th-ofi",
-    "version": 1,
+    "version": 2,
     "descripcion": "Base Set 1-128 por tipo (con ex), 30 Pikachu espiral, Ilustraciones Full Art 129-158 y Classic dorado C01-C30."
   }
 }
