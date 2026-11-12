@@ -2,6 +2,7 @@
   "plantillas": [
     "electric-corporation/pokemon-atrapalos-ya.json",
     "flash-edition/pokemon-anime-world.json",
-    "flash-edition/pokemon-savage-corruption.json"
+    "flash-edition/pokemon-savage-corruption.json",
+    "tcg/pokemon-30th-ofi.json"
   ]
 }

@@ -1,0 +1,773 @@
+{
+  "formato": "album-figuritas",
+  "version": 2,
+  "name": "Pokémon 30th Ofi",
+  "editorial": "TCG",
+  "variants": [
+    {
+      "id": "normal",
+      "name": "Normal",
+      "color": "#6f7d95",
+      "effect": "solid",
+      "shareName": "Normal"
+    },
+    {
+      "id": "ex",
+      "name": "ex",
+      "color": "#c9a43b",
+      "effect": "solid",
+      "texture": "tx-estrella",
+      "shareName": "ex⭐"
+    },
+    {
+      "id": "espiral",
+      "name": "Espiral",
+      "color": "#f2c230",
+      "effect": "holo",
+      "shareName": "Espiral🌀"
+    },
+    {
+      "id": "full-art",
+      "name": "Full Art",
+      "color": "#9b7be0",
+      "effect": "iris",
+      "shareName": "Full Art🌈"
+    },
+    {
+      "id": "dorado",
+      "name": "Dorado",
+      "color": "#e2a33b",
+      "effect": "outline",
+      "shareName": "Dorado🏆"
+    }
+  ],
+  "share": {
+    "title": "📒 {nombre}",
+    "missTitle": "❌ Faltantes ({n}):",
+    "repTitle": "🔁 Repetidas ({n}):",
+    "sep": ", ",
+    "ranges": false,
+    "incMiss": true,
+    "incRep": true,
+    "secName": true,
+    "nameOwnLine": true,
+    "showVariant": false,
+    "repCount": false,
+    "bold": true,
+    "gapGroups": true,
+    "footer": "📲 Arma tu álbum aquí: {enlace}"
+  },
+  "counts": {},
+  "sections": [
+    {
+      "id": "planta",
+      "name": "Base Set: Planta",
+      "shareName": "🌿 Planta",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 1,
+      "to": 8,
+      "letters": "",
+      "labels": [],
+      "specials": "",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": null,
+      "showApp": true,
+      "showShare": true,
+      "gapApp": false,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "fuego",
+      "name": "Base Set: Fuego",
+      "shareName": "🔥 Fuego",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 9,
+      "to": 15,
+      "letters": "",
+      "labels": [],
+      "specials": "15",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": "ex",
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "agua",
+      "name": "Base Set: Agua",
+      "shareName": "💧 Agua",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 16,
+      "to": 22,
+      "letters": "",
+      "labels": [],
+      "specials": "21",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": "ex",
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "pikachu",
+      "name": "Base Set: 30 Pikachu",
+      "shareName": "🐭 30 Pikachu",
+      "emoji": "",
+      "kind": "labels",
+      "prefix": "",
+      "from": 1,
+      "to": 10,
+      "letters": "",
+      "labels": [
+        {
+          "app": "23 · P1",
+          "share": "23 (P1)"
+        },
+        {
+          "app": "24 · P2",
+          "share": "24 (P2)"
+        },
+        {
+          "app": "25 · P3",
+          "share": "25 (P3)"
+        },
+        {
+          "app": "26 · P4",
+          "share": "26 (P4)"
+        },
+        {
+          "app": "27 · P5",
+          "share": "27 (P5)"
+        },
+        {
+          "app": "28 · P6",
+          "share": "28 (P6)"
+        },
+        {
+          "app": "29 · P7",
+          "share": "29 (P7)"
+        },
+        {
+          "app": "30 · P8",
+          "share": "30 (P8)"
+        },
+        {
+          "app": "31 · P9",
+          "share": "31 (P9)"
+        },
+        {
+          "app": "32 · P10",
+          "share": "32 (P10)"
+        },
+        {
+          "app": "33 · P11",
+          "share": "33 (P11)"
+        },
+        {
+          "app": "34 · P12",
+          "share": "34 (P12)"
+        },
+        {
+          "app": "35 · P13",
+          "share": "35 (P13)"
+        },
+        {
+          "app": "36 · P14",
+          "share": "36 (P14)"
+        },
+        {
+          "app": "37 · P15",
+          "share": "37 (P15)"
+        },
+        {
+          "app": "38 · P16",
+          "share": "38 (P16)"
+        },
+        {
+          "app": "39 · P17",
+          "share": "39 (P17)"
+        },
+        {
+          "app": "40 · P18",
+          "share": "40 (P18)"
+        },
+        {
+          "app": "41 · P19",
+          "share": "41 (P19)"
+        },
+        {
+          "app": "42 · P20",
+          "share": "42 (P20)"
+        },
+        {
+          "app": "43 · P21",
+          "share": "43 (P21)"
+        },
+        {
+          "app": "44 · P22",
+          "share": "44 (P22)"
+        },
+        {
+          "app": "45 · P23",
+          "share": "45 (P23)"
+        },
+        {
+          "app": "46 · P24",
+          "share": "46 (P24)"
+        },
+        {
+          "app": "47 · P25",
+          "share": "47 (P25)"
+        },
+        {
+          "app": "48 · P26",
+          "share": "48 (P26)"
+        },
+        {
+          "app": "49 · P27",
+          "share": "49 (P27)"
+        },
+        {
+          "app": "50 · P28",
+          "share": "50 (P28)"
+        },
+        {
+          "app": "51 · P29",
+          "share": "51 (P29)"
+        },
+        {
+          "app": "52 · P30",
+          "share": "52 (P30)"
+        }
+      ],
+      "specials": "",
+      "allSpecial": true,
+      "variant": "espiral",
+      "specialVariant": null,
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": "inline"
+    },
+    {
+      "id": "electrico",
+      "name": "Base Set: Eléctrico",
+      "shareName": "⚡ Eléctrico",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 53,
+      "to": 62,
+      "letters": "",
+      "labels": [],
+      "specials": "53,54",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": "ex",
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "psiquico",
+      "name": "Base Set: Psíquico",
+      "shareName": "🔮 Psíquico",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 63,
+      "to": 81,
+      "letters": "",
+      "labels": [],
+      "specials": "64,66,70,71",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": "ex",
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "lucha",
+      "name": "Base Set: Lucha",
+      "shareName": "🥊 Lucha",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 82,
+      "to": 86,
+      "letters": "",
+      "labels": [],
+      "specials": "",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": null,
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "oscuridad",
+      "name": "Base Set: Oscuridad",
+      "shareName": "🌑 Oscuridad",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 87,
+      "to": 100,
+      "letters": "",
+      "labels": [],
+      "specials": "90,92",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": "ex",
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "acero",
+      "name": "Base Set: Acero",
+      "shareName": "⚙️ Acero",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 101,
+      "to": 108,
+      "letters": "",
+      "labels": [],
+      "specials": "102",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": "ex",
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "dragon",
+      "name": "Base Set: Dragón",
+      "shareName": "🐉 Dragón",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 109,
+      "to": 112,
+      "letters": "",
+      "labels": [],
+      "specials": "109",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": "ex",
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "normal",
+      "name": "Base Set: Normal",
+      "shareName": "⚪ Normal",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 113,
+      "to": 125,
+      "letters": "",
+      "labels": [],
+      "specials": "",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": null,
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "trainer",
+      "name": "Base Set: Trainer",
+      "shareName": "🧢 Trainer",
+      "emoji": "",
+      "kind": "num",
+      "prefix": "",
+      "from": 126,
+      "to": 128,
+      "letters": "",
+      "labels": [],
+      "specials": "",
+      "allSpecial": false,
+      "variant": "normal",
+      "specialVariant": null,
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "ilustraciones",
+      "name": "Ilustraciones",
+      "shareName": "🎨 Ilustraciones",
+      "emoji": "",
+      "kind": "labels",
+      "prefix": "",
+      "from": 1,
+      "to": 10,
+      "letters": "",
+      "labels": [
+        {
+          "app": "129) Exeggutor",
+          "share": "129) Exeggutor"
+        },
+        {
+          "app": "130) Moltres",
+          "share": "130) Moltres"
+        },
+        {
+          "app": "131) Lapras",
+          "share": "131) Lapras"
+        },
+        {
+          "app": "132) Articuno",
+          "share": "132) Articuno"
+        },
+        {
+          "app": "133) Zapdos",
+          "share": "133) Zapdos"
+        },
+        {
+          "app": "134) Toxtricity",
+          "share": "134) Toxtricity"
+        },
+        {
+          "app": "135) Morpeko",
+          "share": "135) Morpeko"
+        },
+        {
+          "app": "136) Drifloon",
+          "share": "136) Drifloon"
+        },
+        {
+          "app": "137) Chandelure",
+          "share": "137) Chandelure"
+        },
+        {
+          "app": "138) Lycanroc",
+          "share": "138) Lycanroc"
+        },
+        {
+          "app": "139) Alolan Meowth",
+          "share": "139) Alolan Meowth"
+        },
+        {
+          "app": "140) Scraggy",
+          "share": "140) Scraggy"
+        },
+        {
+          "app": "141) Galarian Meowth",
+          "share": "141) Galarian Meowth"
+        },
+        {
+          "app": "142) Gholdengo",
+          "share": "142) Gholdengo"
+        },
+        {
+          "app": "143) Kommo-o",
+          "share": "143) Kommo-o"
+        },
+        {
+          "app": "144) Meowth",
+          "share": "144) Meowth"
+        },
+        {
+          "app": "145) Hisuian Zorua",
+          "share": "145) Hisuian Zorua"
+        },
+        {
+          "app": "146) Maushold",
+          "share": "146) Maushold"
+        },
+        {
+          "app": "147) Fuecoco",
+          "share": "147) Fuecoco"
+        },
+        {
+          "app": "148) Greninja",
+          "share": "148) Greninja"
+        },
+        {
+          "app": "149) Pikachu Día",
+          "share": "149) Pikachu Día"
+        },
+        {
+          "app": "150) Pikachu Noche",
+          "share": "150) Pikachu Noche"
+        },
+        {
+          "app": "151) Mewtwo",
+          "share": "151) Mewtwo"
+        },
+        {
+          "app": "152) Mew",
+          "share": "152) Mew"
+        },
+        {
+          "app": "153) Sylveon",
+          "share": "153) Sylveon"
+        },
+        {
+          "app": "154) Gengar",
+          "share": "154) Gengar"
+        },
+        {
+          "app": "155) Jirachi",
+          "share": "155) Jirachi"
+        },
+        {
+          "app": "156) Salamence",
+          "share": "156) Salamence"
+        },
+        {
+          "app": "157) Mewtwo",
+          "share": "157) Mewtwo"
+        },
+        {
+          "app": "158) Mew",
+          "share": "158) Mew"
+        }
+      ],
+      "specials": "",
+      "allSpecial": true,
+      "variant": "full-art",
+      "specialVariant": null,
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    },
+    {
+      "id": "classic",
+      "name": "Classic",
+      "shareName": "🏆 Classic",
+      "emoji": "",
+      "kind": "labels",
+      "prefix": "",
+      "from": 1,
+      "to": 10,
+      "letters": "",
+      "labels": [
+        {
+          "app": "C01) Charizard",
+          "share": "C01) Charizard"
+        },
+        {
+          "app": "C02) Delcatty",
+          "share": "C02) Delcatty"
+        },
+        {
+          "app": "C03) Genesect",
+          "share": "C03) Genesect"
+        },
+        {
+          "app": "C04) Metagross",
+          "share": "C04) Metagross"
+        },
+        {
+          "app": "C05) Misty",
+          "share": "C05) Misty"
+        },
+        {
+          "app": "C06) Tyranitar",
+          "share": "C06) Tyranitar"
+        },
+        {
+          "app": "C07) Sneasel",
+          "share": "C07) Sneasel"
+        },
+        {
+          "app": "C08) Pikachu & Zekrom",
+          "share": "C08) Pikachu & Zekrom"
+        },
+        {
+          "app": "C09) Greninja",
+          "share": "C09) Greninja"
+        },
+        {
+          "app": "C10) Uxie",
+          "share": "C10) Uxie"
+        },
+        {
+          "app": "C11) Crobat",
+          "share": "C11) Crobat"
+        },
+        {
+          "app": "C12) Raikou",
+          "share": "C12) Raikou"
+        },
+        {
+          "app": "C13) Buzzwole",
+          "share": "C13) Buzzwole"
+        },
+        {
+          "app": "C14) Pikachu",
+          "share": "C14) Pikachu"
+        },
+        {
+          "app": "C15) Jigglypuff",
+          "share": "C15) Jigglypuff"
+        },
+        {
+          "app": "C16) Rayquaza",
+          "share": "C16) Rayquaza"
+        },
+        {
+          "app": "C17) Solgaleo",
+          "share": "C17) Solgaleo"
+        },
+        {
+          "app": "C18) Gengar",
+          "share": "C18) Gengar"
+        },
+        {
+          "app": "C19) Darkrai",
+          "share": "C19) Darkrai"
+        },
+        {
+          "app": "C20) Cresselia",
+          "share": "C20) Cresselia"
+        },
+        {
+          "app": "C21) Trainer N",
+          "share": "C21) Trainer N"
+        },
+        {
+          "app": "C22) Gardevoir",
+          "share": "C22) Gardevoir"
+        },
+        {
+          "app": "C23) Palkia",
+          "share": "C23) Palkia"
+        },
+        {
+          "app": "C24) Celebi",
+          "share": "C24) Celebi"
+        },
+        {
+          "app": "C25) Scizor",
+          "share": "C25) Scizor"
+        },
+        {
+          "app": "C26) Mew",
+          "share": "C26) Mew"
+        },
+        {
+          "app": "C27) Arceus",
+          "share": "C27) Arceus"
+        },
+        {
+          "app": "C28) Zacian",
+          "share": "C28) Zacian"
+        },
+        {
+          "app": "C29) Lugia",
+          "share": "C29) Lugia"
+        },
+        {
+          "app": "C30) Magikarp",
+          "share": "C30) Magikarp"
+        }
+      ],
+      "specials": "",
+      "allSpecial": true,
+      "variant": "dorado",
+      "specialVariant": null,
+      "showApp": true,
+      "showShare": true,
+      "gapApp": true,
+      "breakShare": true,
+      "shareLayout": null
+    }
+  ],
+  "goal": "all",
+  "textures": [
+    {
+      "id": "tx-vidrio",
+      "name": "Vidrio",
+      "shape": "shards",
+      "count": 22,
+      "size": "m",
+      "palette": "rainbow",
+      "anim": true
+    },
+    {
+      "id": "tx-laser",
+      "name": "Láser",
+      "shape": "lines",
+      "count": 14,
+      "size": "m",
+      "palette": "rainbow",
+      "anim": true
+    },
+    {
+      "id": "tx-estrella",
+      "name": "Estrella",
+      "shape": "stars",
+      "count": 12,
+      "size": "m",
+      "palette": "rainbow",
+      "anim": true
+    },
+    {
+      "id": "tx-escarcha",
+      "name": "Escarcha",
+      "shape": "dots",
+      "count": 120,
+      "size": "s",
+      "palette": "gold",
+      "anim": true
+    },
+    {
+      "id": "tx-burbuja",
+      "name": "Burbuja",
+      "shape": "bubbles",
+      "count": 8,
+      "size": "m",
+      "palette": "white",
+      "anim": false
+    }
+  ],
+  "plantilla": {
+    "id": "pokemon-30th-ofi",
+    "version": 1,
+    "descripcion": "Base Set 1-128 por tipo (con ex), 30 Pikachu espiral, Ilustraciones Full Art 129-158 y Classic dorado C01-C30."
+  }
+}
